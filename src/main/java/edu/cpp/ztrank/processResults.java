@@ -9,7 +9,6 @@ import java.util.stream.Stream;
  * Created by Zachary Rank on 2/27/17.
  */
 public class processResults {
-asd
     private static HashMap<Long, String> ID_to_Name = new HashMap<Long, String>();
 
     public static void main(String[] args) {
