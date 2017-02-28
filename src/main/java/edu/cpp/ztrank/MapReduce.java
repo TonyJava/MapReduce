@@ -3,19 +3,18 @@ package edu.cpp.ztrank;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.util.ToolRunner;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static org.apache.commons.io.FileUtils.forceDelete;
+
 /**
  * Created by Zachary Rank on 2/27/17.
  */
-public class processResults {
+public class MapReduce {
     private static TreeMap<Long, String> movieIDToMovieName = new TreeMap<>();
     private static TreeMap<String, String> movieNameToMovieYear = new TreeMap<>();
     private static TreeMap<Double, ArrayList<String>> movieRatingToMovieName = new TreeMap<>();
@@ -24,12 +23,12 @@ public class processResults {
     public static void main(String[] args) throws Exception {
         //run jobs first
         int exitCode = ToolRunner.run(new jobsDriver(), args);
-        if(exitCode == 1) System.exit(exitCode);
+        if (exitCode == 1) System.exit(exitCode);
 
         //map values from files
         mapMovieIDs("./a3-dataset/movie_titles.txt");
         mapMovieRatings("./MovieRatings/part-r-00000");
-        mapUserReviewCounts("./UserRatings/part-r-00000");
+        mapUserReviewCounts("./UserReviews/part-r-00000");
 
         //write top 10 users and movies to one file
         int countMovies = 0;
@@ -77,6 +76,11 @@ public class processResults {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        File indexMovie = new File("./MovieRatings");
+        File indexUser = new File("./UserReviews");
+        forceDelete(indexMovie);
+        forceDelete(indexUser);
 
         System.exit(0);
     }

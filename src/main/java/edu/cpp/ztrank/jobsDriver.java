@@ -9,7 +9,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 
@@ -33,7 +32,7 @@ public class jobsDriver extends Configured implements Tool {
         int movie = movieJob();
         int user = userJob();
 
-        if(movie == 0 && user == 0 ) {
+        if (movie == 0 && user == 0) {
             return 0;
         } else return 1;
     }
@@ -72,7 +71,7 @@ public class jobsDriver extends Configured implements Tool {
         job.setJobName("MostReviews");
 
         FileInputFormat.addInputPath(job, new Path("./a3-dataset/TrainingRatings.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("./UserRatings"));
+        FileOutputFormat.setOutputPath(job, new Path("./UserReviews"));
 
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(LongWritable.class);
