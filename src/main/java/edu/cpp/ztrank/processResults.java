@@ -6,7 +6,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by Zachary Rank on 2/27/17.
@@ -28,7 +31,7 @@ public class processResults {
         int countMovies = 0;
         int countUsers = 0;
 
-        try{
+        try {
             PrintWriter writer = new PrintWriter("./output.txt", "UTF-8");
             writer.println("Outputs:\n--------");
 
@@ -38,11 +41,11 @@ public class processResults {
             Arrays.sort(sortedRatings);
             ArrayUtils.reverse(sortedRatings);
             int i = 0;
-            while(countMovies < 10 && i < sortedRatings.length) {
+            while (countMovies < 10 && i < sortedRatings.length) {
                 ArrayList<String> topMovies = movieRatingToMovieName.get(sortedRatings[i]);
-                for(String s : topMovies) {
-                    if(countMovies < 10) {
-                        writer.println(i+1 + ". " + s + " (" + movieNameToMovieYear.get(s) + "), Average Rating: " + sortedRatings[i]);
+                for (String s : topMovies) {
+                    if (countMovies < 10) {
+                        writer.println(i + 1 + ". " + s + " (" + movieNameToMovieYear.get(s) + "), Average Rating: " + sortedRatings[i]);
                         countMovies++;
                     }
                 }
@@ -55,11 +58,11 @@ public class processResults {
             Arrays.sort(sortedReviewCounts);
             ArrayUtils.reverse(sortedReviewCounts);
             i = 0;
-            while(countUsers < 10 && i < sortedRatings.length) {
+            while (countUsers < 10 && i < sortedRatings.length) {
                 ArrayList<String> topUsers = userReviewCountToUserID.get(sortedReviewCounts[i]);
-                for(String s : topUsers) {
-                    if(countUsers < 10) {
-                        writer.println(i+1 + ". " + s + ", Total Reviews: " + sortedReviewCounts[i]);
+                for (String s : topUsers) {
+                    if (countUsers < 10) {
+                        writer.println(i + 1 + ". " + s + ", Total Reviews: " + sortedReviewCounts[i]);
                         countUsers++;
                     }
                 }
@@ -74,8 +77,8 @@ public class processResults {
 
     public static void mapMovieIDs(String filepath) {
 
-        try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            for(String line; (line = br.readLine()) != null; ) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            for (String line; (line = br.readLine()) != null; ) {
                 String[] entry = line.split(",");
                 movieIDToMovieName.put(Long.parseLong(entry[0]), entry[2]);
                 movieNameToMovieYear.put(entry[2], entry[1]);
@@ -87,11 +90,11 @@ public class processResults {
 
     public static void mapMovieRatings(String filepath) {
 
-        try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            for(String line; (line = br.readLine()) != null; ) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            for (String line; (line = br.readLine()) != null; ) {
                 String[] entry = line.split("\\s+");
                 Double rating = Double.parseDouble(entry[1]);
-                if(!movieRatingToMovieName.containsKey(rating)) {
+                if (!movieRatingToMovieName.containsKey(rating)) {
                     ArrayList<String> movies = new ArrayList<>();
                     movies.add(movieIDToMovieName.get(Long.parseLong(entry[0])));
                     movieRatingToMovieName.put(rating, movies);
@@ -107,11 +110,11 @@ public class processResults {
     }
 
     public static void mapUserReviewCounts(String filepath) {
-        try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            for(String line; (line = br.readLine()) != null; ) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            for (String line; (line = br.readLine()) != null; ) {
                 String[] entry = line.split("\\s+");
                 Long reviewCount = Long.parseLong(entry[1]);
-                if(!userReviewCountToUserID.containsKey(reviewCount)) {
+                if (!userReviewCountToUserID.containsKey(reviewCount)) {
                     ArrayList<String> users = new ArrayList<>();
                     users.add(entry[0]);
                     userReviewCountToUserID.put(reviewCount, users);
