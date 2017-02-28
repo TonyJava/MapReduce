@@ -68,7 +68,7 @@ public class jobsDriver extends Configured implements Tool {
     public int userJob() throws IOException, ClassNotFoundException, InterruptedException {
 
         Job job = new Job();
-        job.setJarByClass(userDriver.class);
+        job.setJarByClass(jobsDriver.class);
         job.setJobName("MostReviews");
 
         FileInputFormat.addInputPath(job, new Path("./a3-dataset/TrainingRatings.txt"));
