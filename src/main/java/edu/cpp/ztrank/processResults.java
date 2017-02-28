@@ -1,6 +1,7 @@
 package edu.cpp.ztrank;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.hadoop.util.ToolRunner;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,7 +21,10 @@ public class processResults {
     private static TreeMap<Double, ArrayList<String>> movieRatingToMovieName = new TreeMap<>();
     private static TreeMap<Long, ArrayList<String>> userReviewCountToUserID = new TreeMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        //run jobs first
+        int exitCode = ToolRunner.run(new jobsDriver(), args);
+        if(exitCode == 1) System.exit(exitCode);
 
         //map values from files
         mapMovieIDs("./a3-dataset/movie_titles.txt");
@@ -73,6 +77,8 @@ public class processResults {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.exit(0);
     }
 
     public static void mapMovieIDs(String filepath) {
