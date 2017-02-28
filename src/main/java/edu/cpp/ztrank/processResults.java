@@ -2,18 +2,18 @@ package edu.cpp.ztrank;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Created by Zachary Rank on 2/27/17.
  */
 public class processResults {
     private static TreeMap<Long, String> movieIDToMovieName = new TreeMap<>();
+    private static TreeMap<String, String> movieNameToMovieYear = new TreeMap<>();
     private static TreeMap<Double, ArrayList<String>> movieRatingToMovieName = new TreeMap<>();
     private static TreeMap<Long, ArrayList<String>> userReviewCountToUserID = new TreeMap<>();
 
@@ -42,7 +42,7 @@ public class processResults {
                 ArrayList<String> topMovies = movieRatingToMovieName.get(sortedRatings[i]);
                 for(String s : topMovies) {
                     if(countMovies < 10) {
-                        writer.println(i + ". " + s + ", Average Rating:" + sortedRatings[i]);
+                        writer.println(i+1 + ". " + s + " (" + movieNameToMovieYear.get(s) + "), Average Rating: " + sortedRatings[i]);
                         countMovies++;
                     }
                 }
@@ -59,7 +59,7 @@ public class processResults {
                 ArrayList<String> topUsers = userReviewCountToUserID.get(sortedReviewCounts[i]);
                 for(String s : topUsers) {
                     if(countUsers < 10) {
-                        writer.println(i + ". " + s + ", Total Reviews:" + sortedReviewCounts[i]);
+                        writer.println(i+1 + ". " + s + ", Total Reviews: " + sortedReviewCounts[i]);
                         countUsers++;
                     }
                 }
@@ -73,51 +73,54 @@ public class processResults {
     }
 
     public static void mapMovieIDs(String filepath) {
-        try (Stream<String> stream = Files.lines(Paths.get(filepath))) {
-            stream.forEach(l -> {
-                String[] entry = l.split(",");
+
+        try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            for(String line; (line = br.readLine()) != null; ) {
+                String[] entry = line.split(",");
                 movieIDToMovieName.put(Long.parseLong(entry[0]), entry[2]);
-            });
+                movieNameToMovieYear.put(entry[2], entry[1]);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void mapMovieRatings(String filepath) {
-        try (Stream<String> stream = Files.lines(Paths.get(filepath))) {
-            stream.forEach(l -> {
-                String[] entry = l.split("\\s+");
+
+        try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            for(String line; (line = br.readLine()) != null; ) {
+                String[] entry = line.split("\\s+");
                 Double rating = Double.parseDouble(entry[1]);
                 if(!movieRatingToMovieName.containsKey(rating)) {
-                    ArrayList<String> movies = new ArrayList<String>();
+                    ArrayList<String> movies = new ArrayList<>();
                     movies.add(movieIDToMovieName.get(Long.parseLong(entry[0])));
                     movieRatingToMovieName.put(rating, movies);
                 } else {
-                    ArrayList<String> movies = movieRatingToMovieName.get(entry[1]);
+                    ArrayList<String> movies = movieRatingToMovieName.get(Double.parseDouble(entry[1]));
                     movies.add(movieIDToMovieName.get(Long.parseLong(entry[0])));
                     movieRatingToMovieName.put(rating, movies);
                 }
-            });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void mapUserReviewCounts(String filepath) {
-        try (Stream<String> stream = Files.lines(Paths.get(filepath))) {
-            stream.forEach(l -> {
-                String[] entry = l.split("\\s+");
+        try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            for(String line; (line = br.readLine()) != null; ) {
+                String[] entry = line.split("\\s+");
                 Long reviewCount = Long.parseLong(entry[1]);
                 if(!userReviewCountToUserID.containsKey(reviewCount)) {
-                    ArrayList<String> users = new ArrayList<String>();
+                    ArrayList<String> users = new ArrayList<>();
                     users.add(entry[0]);
                     userReviewCountToUserID.put(reviewCount, users);
                 } else {
-                    ArrayList<String> users = userReviewCountToUserID.get(entry[1]);
+                    ArrayList<String> users = userReviewCountToUserID.get(Long.parseLong(entry[1]));
                     users.add(entry[0]);
                     userReviewCountToUserID.put(reviewCount, users);
                 }
-            });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
