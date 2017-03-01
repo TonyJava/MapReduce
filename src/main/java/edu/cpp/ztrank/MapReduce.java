@@ -90,8 +90,16 @@ public class MapReduce {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             for (String line; (line = br.readLine()) != null; ) {
                 String[] entry = line.split(",");
-                movieIDToMovieName.put(Long.parseLong(entry[0]), entry[2]);
-                movieNameToMovieYear.put(entry[2], entry[1]);
+                String name = entry[2];
+                if(entry.length > 3) {
+                	int z = 3;
+                	while(z < entry.length) {
+                		name += "," + entry[z];
+                		z++;
+                	}
+                }
+                movieIDToMovieName.put(Long.parseLong(entry[0]), name);
+                movieNameToMovieYear.put(name, entry[1]);
             }
         } catch (Exception e) {
             e.printStackTrace();

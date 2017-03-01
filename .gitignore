@@ -18,3 +18,6 @@ MovieRatings/
 UserRatings/
 target/
 *.swp
+.classpath
+.project
+.settings/
