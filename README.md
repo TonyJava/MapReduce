@@ -7,3 +7,5 @@ docker build -t mapreduce .
 
 Run docker container:
 docker run mapreduce
+
+built docker container: https://hub.docker.com/r/rattrocker/mapreduce/
